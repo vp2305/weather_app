@@ -21,8 +21,8 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
-    getLocation();
-    weatherInformation = fetchWeather("forecast.json");
+    weatherInformation = getLocation();
+    // weatherInformation = fetchWeather("forecast.json");
   }
 
   @override
@@ -98,59 +98,56 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.white,
                               ),
                             ),
-                            FractionallySizedBox(
-                              widthFactor: 0.9,
-                              child: Container(
-                                width: 330,
-                                child: Row(
-                                  children: <Widget>[
-                                    Container(
-                                      padding: EdgeInsets.only(top: 40),
-                                      child: Image.asset(
-                                        "assets${snapshot.data.weatherImage}",
-                                        scale: 0.8,
+                            Container(
+                              width: 330,
+                              child: Row(
+                                children: <Widget>[
+                                  Container(
+                                    padding: EdgeInsets.only(top: 40),
+                                    child: Image.asset(
+                                      "assets${snapshot.data.weatherImage}",
+                                      scale: 0.8,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 30),
+                                    child: Text(
+                                      "${snapshot.data.temp_c.toInt()}",
+                                      style: TextStyle(
+                                        fontSize: 60,
+                                        fontWeight: FontWeight.w100,
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 5,
+                                  ),
+                                  Container(
+                                    child: Text(
+                                      "°c",
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
                                     ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 30),
-                                      child: Text(
-                                        "${snapshot.data.temp_c.toInt()}",
-                                        style: TextStyle(
-                                          fontSize: 60,
-                                          fontWeight: FontWeight.w100,
+                                  ),
+                                  SizedBox(
+                                    width: 10,
+                                  ),
+                                  Container(
+                                    margin: EdgeInsets.only(top: 35),
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          "⋀ ${snapshot.data.maxTemp_c.toInt()}°   ⋁ ${snapshot.data.minTemp_c.toInt()}°",
                                         ),
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Text(
-                                        "°c",
-                                        style: TextStyle(
-                                          fontSize: 20,
+                                        SizedBox(height: 10),
+                                        Text(
+                                          "Feels like: ${snapshot.data.feelLike_c.toInt()}°",
                                         ),
-                                      ),
+                                      ],
                                     ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Container(
-                                      margin: EdgeInsets.only(top: 35),
-                                      child: Column(
-                                        children: [
-                                          Text(
-                                            "⋀ ${snapshot.data.maxTemp_c.toInt()}°   ⋁ ${snapshot.data.minTemp_c.toInt()}°",
-                                          ),
-                                          SizedBox(height: 10),
-                                          Text(
-                                            "Feels like: ${snapshot.data.feelLike_c.toInt()}°",
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                             ),
                             Text(
@@ -348,7 +345,8 @@ class _HomePageState extends State<HomePage> {
                                   SizedBox(height: 20),
                                   Container(
                                     width: double.infinity,
-                                    height: 120,
+                                    height: 140,
+                                    padding: EdgeInsets.all(10),
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(20),
                                       color: Color(0x30D9D9D9),
@@ -373,8 +371,6 @@ class _HomePageState extends State<HomePage> {
                                                 ),
                                               ],
                                             ),
-                                            // Text(list.value["weatherImage"]
-                                            //     .toString()),
                                           ],
                                         );
                                       }).toList(),

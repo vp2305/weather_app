@@ -96,16 +96,15 @@ class WeatherInfo {
     ));
 
     var now = DateTime.now();
-    print(now);
     int currentHour = int.parse(DateFormat('HH').format(now));
-
     Map<String, dynamic> hourlyList = new Map<String, dynamic>();
     for (var i = currentHour; i <= 23; i++) {
-      // var hour = DateTime(i);
-      // print(hour);
-      // String amOrPm = DateFormat("a").format(i);
-      // print(amOrPm);
-      hourlyList[i.toString()] = new Map.from(overviewBuilder(
+      DateTime indexTempDate =
+          DateTime.parse("2012-02-27 ${i.toString()}:00:00");
+      String time = DateFormat('j').format(indexTempDate);
+      time = time.replaceAll(" ", "");
+      // print(hour12);
+      hourlyList[time.toLowerCase()] = new Map.from(overviewBuilder(
         imageStyle(
             json["forecast"]["forecastday"][0]["hour"][i]["condition"]["icon"]),
         json["forecast"]["forecastday"][0]["hour"][i]["temp_c"],
@@ -114,6 +113,15 @@ class WeatherInfo {
         json["forecast"]["forecastday"][0]["hour"][i]["feelslike_f"],
       ));
     }
+
+    hourlyList["12am"] = new Map.from(overviewBuilder(
+      imageStyle(
+          json["forecast"]["forecastday"][1]["hour"][0]["condition"]["icon"]),
+      json["forecast"]["forecastday"][1]["hour"][0]["temp_c"],
+      json["forecast"]["forecastday"][1]["hour"][0]["temp_f"],
+      json["forecast"]["forecastday"][1]["hour"][0]["feelslike_c"],
+      json["forecast"]["forecastday"][1]["hour"][0]["feelslike_f"],
+    ));
 
     return WeatherInfo(
       locationTitle: json["location"]["name"],

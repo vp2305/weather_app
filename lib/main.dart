@@ -30,9 +30,11 @@ PermissionStatus _status;
 double longitude;
 double latitude;
 
-Future<WeatherInfo> fetchWeather(endpoint) async {
+Future<WeatherInfo> fetchWeather(endpoint, latitude, longitude) async {
+  print(latitude);
+  print(longitude);
   final url =
-      'https://weatherapi-com.p.rapidapi.com/$endpoint?rapidapi-key=1590330967msh62afc187728aecfp13b12ajsnf89c270e216f&q=Ajax&days=3';
+      'https://weatherapi-com.p.rapidapi.com/$endpoint?rapidapi-key=1590330967msh62afc187728aecfp13b12ajsnf89c270e216f&q=${latitude},${longitude}&days=3';
   final response = await http.get(Uri.parse(url));
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
@@ -45,11 +47,14 @@ Future<WeatherInfo> fetchWeather(endpoint) async {
   }
 }
 
-void getLocation() async {
+Future<WeatherInfo> getLocation() async {
   Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high);
   longitude = position.longitude;
   latitude = position.latitude;
+  Future<WeatherInfo> weatherInformation =
+      fetchWeather("forecast.json", latitude, longitude);
+  return weatherInformation;
 }
 
 String imageStyle(image) {
