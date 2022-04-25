@@ -5,12 +5,16 @@ class WeatherInfoCard extends StatelessWidget {
   final String image;
   final String temp;
   final String feels;
+  final String chanceImage;
+  final String chancePercentage;
   const WeatherInfoCard({
     Key key,
     this.stateText,
     this.image,
     this.temp,
     this.feels,
+    this.chanceImage,
+    this.chancePercentage,
   }) : super(key: key);
 
   @override
@@ -23,6 +27,7 @@ class WeatherInfoCard extends StatelessWidget {
             stateText,
             style: TextStyle(
               fontSize: 15,
+              color: Colors.white,
             ),
           ),
           Container(
@@ -37,6 +42,7 @@ class WeatherInfoCard extends StatelessWidget {
             temp,
             style: TextStyle(
               fontSize: 20,
+              color: Colors.white,
             ),
           ),
           Text(
@@ -45,7 +51,29 @@ class WeatherInfoCard extends StatelessWidget {
               fontSize: 15,
               color: Color(0xFFD3D5D7),
             ),
-          )
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Container(
+                height: 20,
+                child: Image.asset(
+                  chanceImage,
+                  fit: BoxFit.fill,
+                ),
+              ),
+              SizedBox(
+                width: 5,
+              ),
+              Text(
+                chancePercentage,
+                style: TextStyle(
+                  color: Color(0xFFD3D5D7),
+                ),
+              )
+            ],
+          ),
         ],
       ),
     );
