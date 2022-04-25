@@ -29,14 +29,20 @@ class WeatherDetails extends StatelessWidget {
           style: TextStyle(
             fontSize: 14,
             fontWeight: FontWeight.w100,
+            color: Colors.white,
           ),
         ),
         SizedBox(height: 2),
-        Text(
-          iconText,
-          style: TextStyle(
-            fontSize: 13,
-            fontWeight: FontWeight.bold,
+        Container(
+          width: 85,
+          child: Text(
+            iconText,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+            textAlign: TextAlign.center,
           ),
         )
       ],

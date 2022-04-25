@@ -9,7 +9,7 @@ import 'package:weather_app/HomePage.dart';
 import 'package:weather_app/WeatherInfo.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:location_permissions/location_permissions.dart';
-// import "package:permission_handler/permission_handler.dart";
+import 'package:geocoder/geocoder.dart';
 
 // https://flutter.dev/docs/cookbook/networking/fetch-data
 // https://rapidapi.com/contextualwebsearch/api/web-search/
@@ -29,13 +29,11 @@ import 'package:location_permissions/location_permissions.dart';
 PermissionStatus _status;
 double longitude;
 double latitude;
-
-Future<WeatherInfo> fetchWeather(endpoint, latitude, longitude) async {
-  print(latitude);
-  print(longitude);
+Future<WeatherInfo> fetchWeather(endpoint, locality) async {
   final url =
-      'https://weatherapi-com.p.rapidapi.com/$endpoint?rapidapi-key=1590330967msh62afc187728aecfp13b12ajsnf89c270e216f&q=${latitude},${longitude}&days=3';
+      "https://weatherapi-com.p.rapidapi.com/$endpoint?rapidapi-key=1590330967msh62afc187728aecfp13b12ajsnf89c270e216f&q=$locality&days=3";
   final response = await http.get(Uri.parse(url));
+  print(response.statusCode);
   if (response.statusCode == 200) {
     // If the server did return a 200 OK response,
     // then parse the JSON.
@@ -52,8 +50,15 @@ Future<WeatherInfo> getLocation() async {
       desiredAccuracy: LocationAccuracy.high);
   longitude = position.longitude;
   latitude = position.latitude;
+
+  final coordinates = new Coordinates(latitude, longitude);
+  var addresses =
+      await Geocoder.local.findAddressesFromCoordinates(coordinates);
+  var location = addresses.first;
+  var locality = location.locality;
+  print(_status);
   Future<WeatherInfo> weatherInformation =
-      fetchWeather("forecast.json", latitude, longitude);
+      fetchWeather("forecast.json", locality);
   return weatherInformation;
 }
 
@@ -63,13 +68,15 @@ String imageStyle(image) {
 }
 
 Map<String, dynamic> overviewBuilder(String image, double temp_c, double temp_f,
-    double feels_c, double feels_f) {
+    double feels_c, double feels_f, String chanceImage, int chancePercentage) {
   var overviewList = new Map<String, dynamic>();
   overviewList['weatherImage'] = image;
   overviewList['temp_c'] = temp_c;
   overviewList['temp_f'] = temp_f;
   overviewList['feels_c'] = feels_c;
   overviewList['feels_f'] = feels_f;
+  overviewList['chanceImage'] = chanceImage;
+  overviewList['chancePercentage'] = chancePercentage;
   return overviewList;
 }
 
@@ -89,6 +96,17 @@ class _MyAppState extends State<MyApp> {
         .then(_updateStatus);
   }
 
+  Future<Null> refreshApp() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      LocationPermissions()
+          .checkPermissionStatus(
+              level: LocationPermissionLevel.locationWhenInUse)
+          .then(_updateStatus);
+    });
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -98,20 +116,22 @@ class _MyAppState extends State<MyApp> {
         scaffoldBackgroundColor: Colors.white,
         fontFamily: "Poppins",
         textTheme: TextTheme(
-          body1: TextStyle(color: Colors.white),
+          bodyText1: TextStyle(color: Colors.white),
         ),
       ),
-      home: HomePage(),
+      home: RefreshIndicator(
+        onRefresh: refreshApp,
+        child: HomePage(),
+      ),
     );
   }
 
   void _updateStatus(PermissionStatus status) {
-    PermissionStatus result;
     if (_status != PermissionStatus.granted) {
       LocationPermissions()
           .requestPermissions(
               permissionLevel: LocationPermissionLevel.locationWhenInUse)
-          .then((value) => result);
+          .then((value) => refreshApp());
     }
     if (status != _status) {
       setState(() {
@@ -119,14 +139,4 @@ class _MyAppState extends State<MyApp> {
       });
     }
   }
-
-  // void _requestPermission(PermissionStatus state) {
-  //   print(state);
-  // }
-
-  // PermissionStatus permissionCheck() {
-  //   PermissionStatus finalresult;
-
-  //   return finalresult;
-  // }
 }
